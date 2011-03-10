@@ -1091,58 +1091,63 @@ above circumstances rather then generate an error."
       (when reference
         (gnus-alias-use-identity-1 (gnus-alias-get-value reference)))
 
-      ;; add From maybe
-      (when from
-        (gnus-alias-remove-header "From")
+      (save-restriction
+	(goto-char (point-min))
+	(save-match-data 
+	  (when (re-search-forward "<#\\(mml\\|part\\)" nil t)
+	    (narrow-to-region (point-min) (match-beginning 0))))
 
-        (message-position-on-field "From")
-        (insert (gnus-alias-get-value from))
+	;; add From maybe
+	(when from
+	  (gnus-alias-remove-header "From")
 
-        (when gnus-alias-use-buttonized-from
-          ;; do something with widgets here
-;;        (gnus-alias-buttonize-from)
-          ))
+	  (message-position-on-field "From")
+	  (insert (gnus-alias-get-value from))
 
-      ;; add Organization maybe
-      (when org
-        (gnus-alias-remove-header "Organization")
+	  (when gnus-alias-use-buttonized-from
+	    ;; do something with widgets here
+	    ;;        (gnus-alias-buttonize-from)
+	    ))
 
-        (gnus-alias-position-on-field "Organization")
-        (insert (gnus-alias-get-value org)))
+	;; add Organization maybe
+	(when org
+	  (gnus-alias-remove-header "Organization")
 
-      ;; add extra headers maybe
-      (when extras
-        (setq extras-list extras)
-        (while extras-list
-          (setq current-extra (car extras-list))
-          (setq extra-hdr (gnus-alias-get-value (car current-extra)))
-          (setq extra-val (gnus-alias-get-value (cdr current-extra)))
+	  (gnus-alias-position-on-field "Organization")
+	  (insert (gnus-alias-get-value org)))
 
-          (gnus-alias-remove-header extra-hdr)
+	;; add extra headers maybe
+	(when extras
+	  (setq extras-list extras)
+	  (while extras-list
+	    (setq current-extra (car extras-list))
+	    (setq extra-hdr (gnus-alias-get-value (car current-extra)))
+	    (setq extra-val (gnus-alias-get-value (cdr current-extra)))
 
-          (gnus-alias-position-on-field extra-hdr)
-          (insert extra-val)
+	    (gnus-alias-remove-header extra-hdr)
 
-          (setq extras-list (cdr extras-list))
-          ))
+	    (gnus-alias-position-on-field extra-hdr)
+	    (insert extra-val)
 
-      ;; add body maybe
-      (when body
-        (gnus-alias-remove-current-body)
-        (gnus-alias-goto-sig)
-        (forward-line -1)
-        (unless (bolp) (insert "\n"))
-        (insert (gnus-alias-get-value body)))
+	    (setq extras-list (cdr extras-list))
+	    ))
 
-      ;; remove old signature
-      (gnus-alias-remove-sig)
+	;; add body maybe
+	(when body
+	  (gnus-alias-remove-current-body)
+	  (gnus-alias-goto-sig)
+	  (insert (gnus-alias-get-value body))
+	  (unless (bolp) (insert "\n")))
 
-      ;; add signature maybe
-      (when sig
-        (goto-char (point-max))
-        (unless (bolp) (insert "\n"))
-        (insert "-- \n")
-        (insert (gnus-alias-get-value sig)))
+	;; remove old signature
+	(gnus-alias-remove-sig)
+
+	;; add signature maybe
+	(when sig
+	  (goto-char (point-max))
+	  (unless (bolp) (insert "\n"))
+	  (insert "-- \n")
+	  (insert (gnus-alias-get-value sig))))
 
       ;; remember last Identity used
       (setq gnus-alias-current-identity identity)))
@@ -1221,6 +1226,12 @@ responsible for the subsequent mess)."
               body (gnus-alias-get-body ID)
               sig (gnus-alias-get-sig ID))
 
+	(save-restriction
+	  (goto-char (point-min))
+	  (save-match-data 
+	    (when (re-search-forward "<#\\(mml\\|part\\)" nil t)
+	      (narrow-to-region (point-min) (match-beginning 0))))
+	  
           ;; remove From
           (when from (gnus-alias-remove-header "From"))
 
@@ -1242,7 +1253,7 @@ responsible for the subsequent mess)."
 
           ;; remove signature maybe
           (when sig (gnus-alias-remove-sig))
-          ))))
+          )))))
 
 ;;; **************************************************************************
 (defun gnus-alias-remove-header (tag)
@@ -1273,7 +1284,7 @@ responsible for the subsequent mess)."
       ;; remove it if there's something to remove
       (when current-body
         (save-restriction
-          (widen)
+;          (widen)
 
           ;; find body and narrow to it
           (message-goto-eoh)
@@ -1298,9 +1309,9 @@ responsible for the subsequent mess)."
 (defun gnus-alias-goto-sig ()
   "Goto beginning of signature or end of buffer."
   (goto-char (point-min))
-  (save-match-data
-    (re-search-forward message-signature-separator nil 'move))
-  (beginning-of-line))
+  (when (save-match-data
+	  (re-search-forward message-signature-separator nil 'move))
+    (beginning-of-line)))
 
 ;;; **************************************************************************
 (defun gnus-alias-goto-first-empty-header (or-body)
