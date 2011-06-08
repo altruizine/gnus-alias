@@ -755,6 +755,14 @@ Identity, but don't actually use it (just return it)"
       ;; what is it, list or function?
       (cond
        ;; .........................
+       ;; a function
+       ((functionp first-elem)
+        ;; call function; if it returns non-nil, use the identity
+        (when (funcall first-elem)
+          (setq identity (cadr current-choice))
+          ))
+
+       ;; .........................
        ;; a list - class regexp orig-headers
        ((listp first-elem)
         (setq class (nth 0 first-elem)
@@ -819,14 +827,6 @@ Identity, but don't actually use it (just return it)"
               ))
 
           (setq header-list (cdr header-list))
-          ))
-
-       ;; .........................
-       ;; a function
-       ((functionp first-elem)
-        ;; call function; if it returns non-nil, use the identity
-        (when (funcall first-elem)
-          (setq identity (cadr current-choice))
           ))
 
        ;; .........................
