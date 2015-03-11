@@ -678,7 +678,7 @@ one."
   (gnus-alias-ensure-message-mode)
 
   ;; do we need to prompt for identity?
-  (when (and (not identity) (interactive-p))
+  (when (and (not identity) (called-interactively-p 'interactive))
     (setq identity (gnus-alias-identity-prompt)))
 
   ;; call internal function
