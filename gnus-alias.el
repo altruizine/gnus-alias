@@ -1427,5 +1427,3 @@ PREFIX is an optional prefeix to each header block."
 (run-hooks 'gnus-alias-load-hook)
 
 ;;; gnus-alias.el ends here
-;;; **************************************************************************
-;;;; *****  EOF  *****  EOF  *****  EOF  *****  EOF  *****  EOF  *************
