@@ -233,15 +233,9 @@
 (eval-when-compile
   ;; silence the old byte-compiler
   (defvar byte-compile-dynamic)
-  (set (make-local-variable 'byte-compile-dynamic) t)
+  (set (make-local-variable 'byte-compile-dynamic) t))
 
-  (require 'message)
-
-  ;; variables/functions from other packages
-  (defvar message-reply-buffer)
-  (defvar message-signature-separator)
-  (defvar message-mode-map)
-  )
+(require 'message)
 
 ;;; **************************************************************************
 ;;; ***** customization routines
