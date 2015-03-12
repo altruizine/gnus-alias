@@ -233,15 +233,9 @@
 (eval-when-compile
   ;; silence the old byte-compiler
   (defvar byte-compile-dynamic)
-  (set (make-local-variable 'byte-compile-dynamic) t)
+  (set (make-local-variable 'byte-compile-dynamic) t))
 
-  (require 'message)
-
-  ;; variables/functions from other packages
-  (defvar message-reply-buffer)
-  (defvar message-signature-separator)
-  (defvar message-mode-map)
-  )
+(require 'message)
 
 ;;; **************************************************************************
 ;;; ***** customization routines
@@ -684,7 +678,7 @@ one."
   (gnus-alias-ensure-message-mode)
 
   ;; do we need to prompt for identity?
-  (when (and (not identity) (interactive-p))
+  (when (and (not identity) (called-interactively-p 'interactive))
     (setq identity (gnus-alias-identity-prompt)))
 
   ;; call internal function
@@ -1433,5 +1427,3 @@ PREFIX is an optional prefeix to each header block."
 (run-hooks 'gnus-alias-load-hook)
 
 ;;; gnus-alias.el ends here
-;;; **************************************************************************
-;;;; *****  EOF  *****  EOF  *****  EOF  *****  EOF  *****  EOF  *************
