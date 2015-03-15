@@ -1166,7 +1166,8 @@ If none of the above, return \"\"."
      ;; .........................
      ;; FILE
      ((and (> (length element) 0)
-           (file-exists-p element))
+           (and (file-exists-p element)
+                (not (file-directory-p element))))
       (with-temp-buffer
         (insert-file-contents element nil)
         (buffer-string)))
