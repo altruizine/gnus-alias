@@ -2,12 +2,12 @@
 
 ;; This file is not part of Emacs
 
-;; Copyright (C) 2001 by Joseph L. Casadonte Jr.
+;; Copyright (C) 2023 by Mark A. Hershberger
 ;; Author:          Joe Casadonte <emacs@northbound-train.com>
 ;; Maintainer:      Mark A. Hershberger <mah@everybody.org>
 ;; Created:         September 08, 2001
 ;; Keywords:        personality, identity, news, mail, gnus
-;; Version:         1.6
+;; Version:         1.7.0
 ;; Latest Version:  http://github.com/hexmode/gnus-alias/
 
 ;; COPYRIGHT NOTICE
@@ -1302,7 +1302,7 @@ responsible for the subsequent mess)."
   (goto-char (point-min))
   (when (save-match-data
 	  (re-search-forward message-signature-separator nil 'move))
-    (beginning-of-line)))
+    (forward-line 0)))
 
 ;;; **************************************************************************
 (defun gnus-alias-goto-first-empty-header (or-body)
